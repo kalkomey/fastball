@@ -15,6 +15,7 @@ module Fastball
 
     def initialize(hash={})
       @hash = {}
+      @missing_items = []
 
       hash.map do |k, v|
         @hash[k.to_s] = if v.kind_of?(Hash)
@@ -25,10 +26,17 @@ module Fastball
       end
     end
 
+    def missing_items
+      @missing_items
+    end
+
     private
 
     def method_missing(method_name, *args, &block)
-      @hash[method_name.to_s] || super
+      return @hash[method_name.to_s] if @hash.include?(method_name.to_s)
+
+      @missing_items << method_name.to_s unless @missing_items.include?(method_name.to_s)
+      return nil
     end
 
     def respond_to_missing?(method_name, include_private=false)

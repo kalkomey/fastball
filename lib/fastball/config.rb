@@ -24,7 +24,7 @@ module Fastball
   #
   # The generated config files will have the same path as the config templates
   # but with the +.erb+ extension removed.
-  # 
+  #
   #     config/database.yml.erb --> rake fastball:config --> config/database.yml
   #
   # You should <b>never edit the generated config file</b> by hand because Fastball will
@@ -98,6 +98,12 @@ module Fastball
       headline "Rendering config files from provided templates.\n"
       results = template_paths.map do |path|
         render_template path
+      end
+
+      unless config.missing_items.empty?
+        puts "\nError: missing config values:\n"
+        config.missing_items.each { |item| puts "\t#{item}\n" }
+        exit 1
       end
 
       headline "Saving new config files.\n"

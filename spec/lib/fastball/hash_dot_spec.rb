@@ -16,8 +16,13 @@ describe Fastball::HashDot do
     expect(h.nested.hashes.are_fun).to eq('hooray!')
   end
 
-  it 'raises when key not found' do
+  it 'records when key not found' do
     h = described_class.new
-    expect(-> { h.whatever }).to raise_error(NoMethodError)
+    expect(-> { h.whatever }).to change { h.missing_items.count }.by(1)
+  end
+
+  it 'raises when nested key not found' do
+    h = described_class.new
+    expect(-> { h.whatever.hello }).to raise_error(NoMethodError)
   end
 end

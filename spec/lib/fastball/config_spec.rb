@@ -40,10 +40,10 @@ describe Fastball::Config do
       before { set_pwd 'spec/fixtures/app_missing_values' }
       after { restore_pwd }
 
-      it 'raises before writing any files' do
+      it 'exits before writing any files' do
         expect(-> {
           Fastball::Config.generate
-        }).to raise_error(NoMethodError) { |err| expect(err.to_s).to include('password') }
+        }).to raise_error(SystemExit) { |err| expect(err.to_s).to include('password') }
 
         @config_paths.each do |path|
           expect(File.exists? path).to be false
